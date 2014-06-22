@@ -1,0 +1,5 @@
+obj/*
+lib/*
+test/arduino_rcv
+test/scanner
+test/pingtest

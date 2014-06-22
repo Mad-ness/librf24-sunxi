@@ -14,7 +14,7 @@ char receive_payload[max_payload_size+1]; // +1 to allow room for a terminating 
 
 // CE - PD13
 // CSN - PD02
-RF24 radio(SUNXI_GPD(13), SUNXI_GPD(2), "/dev/spidev0.0");
+RF24 radio(SUNXI_GPB(13), SUNXI_GPB(10), "/dev/spidev0.0");
 
 void setup(void)
 {
