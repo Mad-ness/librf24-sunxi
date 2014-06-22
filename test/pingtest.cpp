@@ -1,7 +1,8 @@
+#include "gpio_sun7i.h"
 #include <cstdlib>
 #include <iostream>
 #include "RF24.h"
-#include "gpio.h"
+
 using namespace std;
 
 const uint64_t pipes[2] = {0xF0F0F0F0E1LL, 0xF0F0F0F0D2LL};

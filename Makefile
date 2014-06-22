@@ -36,6 +36,6 @@ install:
 	@echo "[Install]"
 	@if ( test ! -d ${PREFIX}lib ) ; then mkdir -p ${PREFIX}lib ; fi
 	@install -m 0755 ${LIBDIR}${LIBNAME} ${PREFIX}${LIBDIR}
-	@ln -sf ${LIBDIR}${LIBNAME} ${PREFIX}${LIBDIR}${LIB}.so.1
+	@ln -sf ${PREFIX}${LIBDIR}${LIBNAME} ${PREFIX}${LIBDIR}${LIB}.so.1
 	@ln -sf ${PREFIX}${LIBDIR}${LIB}.so.1 ${PREFIX}${LIBDIR}${LIB}.so
 	@ldconfig
