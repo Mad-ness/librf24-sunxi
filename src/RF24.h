@@ -237,6 +237,15 @@ protected:
    * are enabled.  See the datasheet for details.
    */
   void toggle_features(void);
+
+  /**
+   * Clear interrupt flags in the status register
+   *
+   * Interrupts should be cleared after corresponding interrupt processing is completed.
+   * See the datasheet for details.
+   */  
+  void clearInterrupt();
+
   /**@}*/
 
 public:
@@ -320,7 +329,7 @@ public:
    *
    * @param buf Pointer to a buffer where the data should be written
    * @param len Maximum number of bytes to read into the buffer
-   * @return True if the payload was delivered successfully false if not
+   * @return True if there is more data available to be read, false otherwise
    */
   bool read( void* buf, uint8_t len );
 
@@ -633,8 +642,11 @@ public:
    * @param[out] tx_ok The send was successful (TX_DS)
    * @param[out] tx_fail The send failed, too many retries (MAX_RT)
    * @param[out] rx_ready There is a message waiting to be read (RX_DS)
+   * @param[out] pipe_num optional placeholder to store number of the pipe that awaits data (RX_DS)
    */
   void whatHappened(bool& tx_ok,bool& tx_fail,bool& rx_ready);
+  void whatHappened(bool& tx_ok,bool& tx_fail,bool& rx_ready, uint8_t* pipe_num);
+
 
   /**
    * Test whether there was a carrier on the line for the

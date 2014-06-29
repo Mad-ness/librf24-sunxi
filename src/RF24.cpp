@@ -529,6 +529,7 @@ bool RF24::write(const void* buf, uint8_t len)
   // * There is an ack packet waiting (RX_DR)
   bool tx_ok, tx_fail;
   whatHappened(tx_ok, tx_fail, ack_payload_available);
+  clearInterrupt();
 
   //printf("%u%u%u\r\n",tx_ok,tx_fail,ack_payload_available);
 
@@ -608,12 +609,6 @@ bool RF24::available(uint8_t* pipe_num)
     if (pipe_num)
       *pipe_num = (status >> RX_P_NO) & 0b111;
 
-    // Clear the status bit
-
-    // ??? Should this REALLY be cleared now?  Or wait until we
-    // actually READ the payload?
-
-    write_register(STATUS,_BV(RX_DR) );
 
     // Handle ack payload receipt
     if (status & _BV(TX_DS))
@@ -632,23 +627,51 @@ bool RF24::read(void* buf, uint8_t len)
   // Fetch the payload
   read_payload(buf, len);
 
-  // was this the last of the data available?
-  return read_register(FIFO_STATUS) & _BV(RX_EMPTY);
+  // check if there is more data in RX FIFO (1 - fifo empty)
+  bool rx_fifo_empty = read_register(FIFO_STATUS) & _BV(RX_EMPTY);
+
+  // automatically clear RX_DR interrupt bit if there is nothing more to receive
+  if (rx_fifo_empty){
+    write_register(STATUS,_BV(RX_DR) );
+  }
+
+  return !rx_fifo_empty;
 }
 
 /****************************************************************************/
 
-void RF24::whatHappened(bool& tx_ok,bool& tx_fail,bool& rx_ready)
+
+void RF24::whatHappened(bool& tx_ok,bool& tx_fail,bool& rx_ready){
+	whatHappened(tx_ok, tx_fail, rx_ready, NULL);
+}
+
+void RF24::whatHappened(bool& tx_ok,bool& tx_fail,bool& rx_ready, uint8_t* pipe_num)
 {
-  // Read the status & reset the status in one easy call
-  // Or is that such a good idea?
-  uint8_t status = write_register(STATUS, _BV(RX_DR) | _BV(TX_DS) | _BV(MAX_RT) );
+	/* from NRF24L01 datasheet:
+	1) read payload
+	2) clear RX_RD
+	3) read RX FIFO status
+	4) repeat from 1 if there is data in RX FIFO
+
+	So no more interrupt clearing here.
+	*/
+
+  uint8_t status = get_status();
 
   // Report to the user what happened
   tx_ok = status & _BV(TX_DS);
   tx_fail = status & _BV(MAX_RT);
   rx_ready = status & _BV(RX_DR);
+
+  if (pipe_num){ //copy pipe number
+    *pipe_num = (status >> RX_P_NO) & 0b111;
+  }
 }
+
+void RF24::clearInterrupt(){
+	write_register(STATUS, _BV(RX_DR) | _BV(TX_DS) | _BV(MAX_RT) );
+}
+
 
 /****************************************************************************/
 

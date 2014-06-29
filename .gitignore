@@ -1,5 +1,7 @@
 obj/*
 lib/*
+test/spidev_test
 test/arduino_rcv
+test/arduino_rcv_irq
 test/scanner
 test/pingtest

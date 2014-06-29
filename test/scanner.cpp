@@ -8,9 +8,10 @@
 void setup(void);
 void loop(void);
 
+// CE - PD13
+// CSN - PD02
+RF24 radio(SUNXI_GPB(13), SUNXI_GPB(10), "/dev/spidev0.0");
 
-RF24 radio(SUNXI_GPI(14), SUNXI_GPI(15), "/dev/spidev2.0"); // // Channel info 
-//
 const short num_channels = 128;
 short values[num_channels]; //
 
