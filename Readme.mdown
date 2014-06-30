@@ -1,0 +1,92 @@
+Read Me
+=====================
+
+This is a port of popular nRF24L01(+) library RF24 for Allwinner A10/A20 devices.
+
+To build sun7i (a20) version, type
+```sh
+make librf24-sun7i
+```
+
+To build sun4i (a10) version, type
+```sh
+make librf24-sun4i
+```
+
+To install library, type
+```sh
+    sudo make install
+```
+
+To make tests, type
+```sh
+	cd test/
+	make
+```
+
+
+Tests description
+-----------------
+
+- **scanner.cpp**
+Example to detect interference on the various channels available.
+This is a good diagnostic tool to check whether you're picking a
+good channel for your application.
+
+- **pingtest.cpp**
+Examples sends data to a client, which receives it and then sends back.
+Refer to arduino/pingtest.pde for a sample arduino client.
+
+- **arduino_rcv.cpp**
+This example receives incrementing counter value from Arduino node (arduino/arduino_send.pde)
+
+- **arduino_rcv_irq.cpp**
+Similar to arduino_rcv, but this sample uses IRQ pin through GPIO to reduce CPU usage.
+
+
+Wiring and configuration for Cubieboard 2
+------------------
+
+All tests by default use /dev/spidev0.0 device and assume the following connectionof the NRF24L01 module to the Cubieboard:
+```sh
+NRF24L01 pin -> Cubiboard 2 pin
+
+1 GND -> 45 GND
+2 3.3V -> 44 3.3V
+3 CE -> 41, PB13
+4 CSN -> 40, PB10
+5 SCK -> 47, PI11
+6 MOSI -> 46, PI12
+7 MISO -> 48, PI13
+8 IRQ -> 37, PH7 (optional, for the sample that uses IRQ)
+```
+
+script.fex configuration
+```sh
+[spi0_para]
+spi_used = 1
+spi_cs_bitmap = 1
+spi_cs0 = port:PI10<2><default><default><default>
+spi_cs1 = port:PI14<2><default><default><default>
+spi_sclk = port:PI11<2><default><default><default>
+spi_mosi = port:PI12<2><default><default><default>
+spi_miso = port:PI13<2><default><default><default>
+
+[spi_devices]
+spi_dev_num = 1
+
+[spi_board0]
+modalias = "spidev"
+max_speed_hz = 12000000
+bus_num = 0
+chip_select = 0
+mode = 0
+full_duplex = 1
+manual_cs = 0
+
+[gpio_para]
+gpio_num = 8
+...
+gpio_pin_8 = port:PH7<1><default><default><default>
+```
+

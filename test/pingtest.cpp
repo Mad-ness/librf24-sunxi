@@ -24,12 +24,16 @@ void setup(void)
         radio.enableDynamicPayloads();
         // optionally, increase the delay between retries & # of retries
         radio.setRetries(15, 15);
-        radio.setDataRate(RF24_250KBPS);
+        radio.setDataRate(RF24_2MBPS);
+		radio.setPALevel(RF24_PA_HIGH);
+		radio.setChannel(50);
         // Open pipes to other nodes for communication
         // Open 'our' pipe for writing
         // Open the 'other' pipe for reading, in position #1 (we can have up to 5 pipes open for reading)
         radio.openWritingPipe(pipes[0]);
         radio.openReadingPipe(1, pipes[1]);
+		radio.setCRCLength(RF24_CRC_16);
+		radio.setAutoAck( true ) ;
         // Start listening
         radio.startListening();
         // Dump the configuration of the rf unit for debugging
