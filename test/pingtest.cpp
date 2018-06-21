@@ -6,7 +6,7 @@
 using namespace std;
 
 // const uint64_t pipes[2] = {0xF0F0F0F0E1LL, 0xF0F0F0F0D2LL};
-const uint64_t pipes[2] = { 0x65646f4e32LL, 0x65646f4e31LL };
+const uint64_t pipes[2] = { 0x65646f4e31LL, 0x65646f4e32LL };
 const int min_payload_size = 4;
 const int max_payload_size = 32;
 const int payload_size_increments_by = 2;
@@ -27,7 +27,7 @@ void setup(void)
 {
         radio.begin();
         // enable dynamic payloads
-        radio.enableDynamicPayloads();
+        // radio.enableDynamicPayloads();
         // optionally, increase the delay between retries & # of retries
         radio.setRetries(15, 15);
         radio.setDataRate(RF24_250KBPS);
@@ -38,8 +38,8 @@ void setup(void)
         // Open the 'other' pipe for reading, in position #1 (we can have up to 5 pipes open for reading)
         radio.openWritingPipe(pipes[0]);
         radio.openReadingPipe(1, pipes[1]);
-		radio.setCRCLength(RF24_CRC_16);
-		radio.setAutoAck( true ) ;
+//		radio.setCRCLength(RF24_CRC_16);
+//		radio.setAutoAck( true ) ;
         // Start listening
         radio.startListening();
         // Dump the configuration of the rf unit for debugging
@@ -50,7 +50,9 @@ void loop(void)
 {
         // Ping out.
         // The payload will always be the same, what will change is how much of it we send.
-        static char send_payload[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ789012";
+        static char send_payload[32];
+        sprintf(&send_payload[1], "ABCDEFGHIJKLMNOPQRSTUVWXYZ789012");
+        send_payload[0] = 0x1;
 
         // First, stop listening so we can talk.
         radio.stopListening();

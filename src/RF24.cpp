@@ -1054,3 +1054,16 @@ void RF24::setRetries(uint8_t delay, uint8_t count)
 {
   write_register(SETUP_RETR, (delay & 0xf) <<ARD | (count & 0xf) << ARC);
 }
+
+/****************************************************************************/
+bool RF24::isChipConnected()
+{
+  uint8_t setup = read_register(SETUP_AW);
+  if(setup >= 1 && setup <= 3)
+  {
+    return true;
+  }
+
+  return false;
+}
+

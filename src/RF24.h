@@ -86,6 +86,9 @@ protected:
    */
   int init_gpio();
 
+
+  bool isChipConnected();
+
   /**
    * Set chip select pin
    *
