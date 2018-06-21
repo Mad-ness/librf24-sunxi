@@ -87,7 +87,6 @@ protected:
   int init_gpio();
 
 
-  bool isChipConnected();
 
   /**
    * Set chip select pin
@@ -252,6 +251,8 @@ protected:
   /**@}*/
 
 public:
+
+  bool isChipConnected();
   /**
    * @name Primary public interface
    *
