@@ -10,13 +10,17 @@ void loop(void);
 
 // CE - PD13
 // CSN - PD02
-RF24 radio(SUNXI_GPB(13), SUNXI_GPB(10), "/dev/spidev0.0");
+const int CEpin = SUNXI_GPB(10);
+const int CSNpin = SUNXI_GPB(11);
+
+RF24 radio(CEpin, CSNpin, "/dev/spidev0.0");
 
 const short num_channels = 128;
 short values[num_channels]; //
 
 int main(int argv, char** argc)
 {
+  printf("Pins CE: %d, CSN: %d\n", CEpin, CSNpin);
   setup();
   while (1) loop();
 

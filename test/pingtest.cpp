@@ -5,7 +5,8 @@
 
 using namespace std;
 
-const uint64_t pipes[2] = {0xF0F0F0F0E1LL, 0xF0F0F0F0D2LL};
+// const uint64_t pipes[2] = {0xF0F0F0F0E1LL, 0xF0F0F0F0D2LL};
+const uint64_t pipes[2] = { 0x65646f4e32LL, 0x65646f4e31LL };
 const int min_payload_size = 4;
 const int max_payload_size = 32;
 const int payload_size_increments_by = 2;
@@ -15,7 +16,12 @@ char receive_payload[max_payload_size+1]; // +1 to allow room for a terminating 
 
 // CE - PD13
 // CSN - PD02
-RF24 radio(SUNXI_GPB(13), SUNXI_GPB(10), "/dev/spidev0.0");
+
+const int CEpin = SUNXI_GPB(10);
+const int CSNpin = SUNXI_GPB(11);
+
+RF24 radio(CEpin, CSNpin, "/dev/spidev0.0");
+// RF24 radio(SUNXI_GPB(13), SUNXI_GPB(10), "/dev/spidev0.0");
 
 void setup(void)
 {
@@ -24,9 +30,9 @@ void setup(void)
         radio.enableDynamicPayloads();
         // optionally, increase the delay between retries & # of retries
         radio.setRetries(15, 15);
-        radio.setDataRate(RF24_2MBPS);
-		radio.setPALevel(RF24_PA_HIGH);
-		radio.setChannel(50);
+        radio.setDataRate(RF24_250KBPS);
+		radio.setPALevel(RF24_PA_LOW);
+		//radio.setChannel(50);
         // Open pipes to other nodes for communication
         // Open 'our' pipe for writing
         // Open the 'other' pipe for reading, in position #1 (we can have up to 5 pipes open for reading)
@@ -48,7 +54,7 @@ void loop(void)
 
         // First, stop listening so we can talk.
         radio.stopListening();
-
+        next_payload_size = 32;
         // Take the time, and send it.  This will block until complete
         printf("Now sending length %i...", next_payload_size);
         radio.write(send_payload, next_payload_size);

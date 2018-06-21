@@ -1,12 +1,12 @@
 LIBNAME=rf24-sunxi
-LIBDIR=../lib/
+LIBDIR=/usr/local/lib
 
 all:spidev_test pingtest scanner arduino_rcv arduino_rcv_irq
 
-pingtest:
+pingtest: pingtest.cpp
 	g++ pingtest.cpp -I../src/ -L${LIBDIR} -l${LIBNAME} -o pingtest
 
-scanner:
+scanner: scanner.cpp
 	g++ scanner.cpp -I../src/ -L${LIBDIR} -l${LIBNAME} -o scanner
 
 spidev_test:
